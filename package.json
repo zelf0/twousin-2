@@ -5,9 +5,12 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "predeploy": "expo export:web",
+    "deploy-hosting": "npm run predeploy && firebase deploy --only hosting"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.2",
     "@react-native-firebase/app": "^17.0.0",
     "@react-native-firebase/messaging": "^17.0.0",
     "@react-navigation/bottom-tabs": "^6.5.4",
@@ -20,12 +23,12 @@
     "firebase": "^9.17.1",
     "native-base": "^3.4.25",
     "react": "18.1.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "18.1.0",
     "react-native": "0.70.5",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
-    "react-native-web": "~0.18.7"
+    "react-native-web": "~0.18.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

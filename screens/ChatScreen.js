@@ -41,6 +41,7 @@ import {
 } from "@expo/vector-icons";
 // import * as ImagePicker from 'expo-image-picker';
 import GameLobby from "../components/GameLobby";
+import ChatInput from "../components/ChatInput";
 
 const auth = getAuth();
 const storage = getStorage();
@@ -58,17 +59,30 @@ const ChatScreen = ({ navigation, route }) => {
     //   };
   }, [navigation]);
 
-  const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [images, setImages] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [gameLobbyOpen, setGameLobbyOpen] = useState(false);
   const [gameType, setGameType] = useState("");
   const [gameState, setGameState] = useState(null);
+  const [replyIdx, setReplyIdx] = useState(null);
+  const [replyMessage, setReplyMessage] = useState(null);
+  const [highlighted, setHighlighted] = useState(null);
+
+
+  const highlight = (idx) => {
+    setHighlighted(idx)
+  }
 
   const removePhoto = (imageToRemove) => {
     setImages(images.filter((img) => img != imageToRemove));
   };
+
+  const reply = (idx, message) => {
+    console.log(idx);
+    setReplyIdx(idx);
+    setReplyMessage(message);
+  }
 
   const createNewGame = (type, state) => {
     setGameType(type);
@@ -91,21 +105,26 @@ const ChatScreen = ({ navigation, route }) => {
     // }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (input) => {
     if (!input && images.length == 0 && !gameType) {
       return;
     }
+
+    console.log("start function");
     Keyboard.dismiss();
-    for (let i = 0; i < images.length; i++) {
+    for (let i = 0; i < images?.length; i++) {
       // console.log("uploading..", images[i]);
       // const compressedImageData = (await manipulateAsync(images[i], { resize: { width: 250 } }));
       // const uploadUrl = await uploadImage(compressedImageData);
-      const uploadUrl = await uploadImage(images[i]);
-      setUploadedImages([...uploadedImages, uploadUrl]);
+      // const uploadUrl = await uploadImage(images[i]);
+      // setUploadedImages([...uploadedImages, uploadUrl]);
       // console.log("images", uploadedImages[i]);
     }
+
+    console.log("reset state");
     //  console.log("IMAGE.  ", uploadedImages[0]);
     try {
+      console.log("in try statement")
       const docRef = await addDoc(
         collection(db, "chats", route.params.id, "messages"),
         {
@@ -116,9 +135,11 @@ const ChatScreen = ({ navigation, route }) => {
           images: uploadedImages,
           gameType: gameType,
           gameState: gameState,
+          replyIdx: replyIdx,
+          replyMessage: replyMessage
         }
       );
-      // console.log("adding doc ", docRef.id);
+      console.log("added doc ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
       alert("Error adding document: ", e);
@@ -131,15 +152,15 @@ const ChatScreen = ({ navigation, route }) => {
       console.error("Error adding document: ", e);
       alert("Error adding document: ", e);
     }
-
-    setInput("");
     setImages([]);
     setUploadedImages([]);
     setGameType("");
     setGameState(null);
+    setReplyIdx(null);
+    setReplyMessage(null);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chats", route.params.id, "messages"),
@@ -160,6 +181,7 @@ const ChatScreen = ({ navigation, route }) => {
     return unsubscribe;
   }, []);
   const scrollViewRef = useRef();
+  const flatListRef = useRef(null);
 
   const uploadImage = async (uri) => {
     // const response = await fetch(uri);
@@ -192,6 +214,19 @@ const ChatScreen = ({ navigation, route }) => {
     return storageRef.toString();
   };
 
+  // useEffect(() => {
+  //   let i = 0;
+  //   const intervalToken = setInterval(() => {
+  //     console.log(i);
+  //     i++;
+  //   }, 1000);
+  
+  //   return () => {
+  //     clearInterval(intervalToken);
+  //   }
+  // }, [])
+  
+
   return (
     <SafeAreaView>
       <Text>{route.params.chatName}</Text>
@@ -208,7 +243,7 @@ const ChatScreen = ({ navigation, route }) => {
         keyboardVerticalOffset={100}
       >
         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-        <ScrollView
+        {/* <ScrollView
           height="500px"
           flex={1}
           bg="darkBlue.800"
@@ -225,7 +260,24 @@ const ChatScreen = ({ navigation, route }) => {
               data={data}
             />
           ))}
-        </ScrollView>
+        </ScrollView> */}
+         <FlatList
+        initialNumToRender={10}
+        bg="darkBlue.800"
+        data={messages}
+        ref={flatListRef}
+        // getItemLayout={(data, index) => (
+        //   {length: 30, offset: 30 * index, index}
+        // )}
+        // initialScrollIndex = {messages.length - 1}
+        // inverted={1}
+        onContentSizeChange={() =>
+          flatListRef.current.scrollToEnd({ animated: true })
+        }
+        renderItem={({item, index}) => <Message highlighted={highlighted} highlight={highlight} flatListRef={flatListRef} onReply={reply} messageId={item.id} index={index} chatId={route.params.id} data={item.data} />}
+        keyExtractor={item => item.id}
+      />
+
         <Center bottom={0} style={styles.footer}>
           {/* <ScrollView maxH={200}> */}
           {/* {images.map((image, idx) => 
@@ -282,50 +334,15 @@ const ChatScreen = ({ navigation, route }) => {
                 }}
                 size={10}
               >
-                {" "}
-                Clear{" "}
+                Clear
               </Button>
             </HStack>
           ) : (
             <></>
           )}
           {/* </ScrollView> */}
-          <Input
-            placeholder="Message"
-            value={input}
-            //TODO: send message on enter
-            onChangeText={(text) => setInput(text)}
-            InputLeftElement={
-              <HStack>
-                <Icon
-                  as={<MaterialIcons name="add" />}
-                  key={1}
-                  size={10}
-                  mr="2"
-                  color="primary.400"
-                  onPress={addMedia}
-                />
-                <Icon
-                  as={<MaterialIcons name="sports-esports" />}
-                  key={2}
-                  size={10}
-                  mr="2"
-                  color="primary.400"
-                  onPress={openGameLobby}
-                />
-              </HStack>
-            }
-            InputRightElement={
-              <Icon
-                as={<Ionicons name="send" />}
-                size={8}
-                mr="2"
-                color="primary.400"
-                onPress={sendMessage}
-              />
-            }
-          />
-          {/* <Button size="100" title="send" onPress={sendMessage}> Send </Button> */}
+          {replyIdx !== null ? <Text> Replying to {replyMessage}</Text> : <></>}
+          <ChatInput onSendMessage={sendMessage} onAddMedia={addMedia} onOpenGameLobby={openGameLobby}/>
         </Center>
         {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>

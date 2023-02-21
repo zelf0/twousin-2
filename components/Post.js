@@ -2,9 +2,8 @@ import React from "react";
 import { View } from "react-native";
 import { useState, useEffect } from "react";
 import Comment from "./Comment";
-import { Box, Text, Heading, VStack, HStack, ScrollView } from "native-base";
+import { Box, Text, Heading, VStack, HStack, ScrollView, Pressable } from "native-base";
 import CommentForm from "./CommentForm";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import LongPost from "./LongPost";
 import InnerPost from "./InnerPost";
 
@@ -36,13 +35,11 @@ const Post = ({ navigation, postData, id }) => {
       width="100%"
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
     >
-      <Box width="100%" bg="light.50" m={2} >
+      <Box width="100%" maxW="500px" bg="light.50" m={1} >
         <Pressable onPress = {handlePress} p="5" bg = "green">
-          <InnerPost post={post}/>
-          {/* <LongPost post={post}/> */}
+          <InnerPost post={post}/>  
         </Pressable>
         <VStack bg="#06024f" p="3">
-          {/* 3c3746  purple dark*/}
           <ScrollView maxH={20}>
           {comments.map((comment, idx) => (
             <Comment comment={comment} key={idx} />

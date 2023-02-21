@@ -12,11 +12,13 @@ const GameMessage = ({self, gameState, gameType, chatId, messageId}) => {
         <GameStage chatId={chatId} messageId={messageId} gameState={gameState} gameType={gameType}/>
         </Modal.Content>
     </Modal>
+    {/* <Box m={2} alignItems = {self ? "flex-end" : "flex-start"}>
+    <Center p={3} borderRadius={20} maxW="55%" minW="20%" bgColor={self ? "primary.500" : "white"}> */}
     <Pressable onPress = {() => setGameStageOpen(true)} m={2} alignItems = {self ? "flex-end" : "flex-start"}>
-    <Center maxW="55%" minW="20%" bgColor={self ? "primary.500" : "white"}>
-        <Text>{gameType}</Text>
-    </Center>
+        <Text borderWidth={1} > Play {gameType}</Text>
     </Pressable>
+    {/* </Center>
+    </Box> */}
     </Box>
   )
 }

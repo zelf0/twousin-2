@@ -1,5 +1,6 @@
 import * as React from "react";
 import { View, Text } from "react-native";
+import { Box } from 'native-base';
 import {
   NavigationContainer,
   DefaultTheme,
@@ -12,9 +13,7 @@ import { NativeBaseProvider } from "native-base";
 import ChatLobbyScreen from "../screens/ChatLobbyScreen";
 import CreatePost from "../screens/CreatePost";
 import Notifications from "../screens/Notifications";
-// import Settings from 'ChannelListScreen/screens/Settings';
 import BottomNav from "../components/BottomNav";
-// import messaging from '@react-native-firebase/messaging';
 
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -55,6 +54,9 @@ const TabNavigation = () => {
   //   }
   // }, [])
 
+
+
+  //just commented this out:
   const navigation = useNavigation();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -77,8 +79,8 @@ const TabNavigation = () => {
 
 
   return (
-    // <OverlayProvider >
-    // <NativeBaseProvider>
+
+
       <Tab.Navigator
         tabBar={(props) => (
           <BottomNav {...props} stackNavigation={navigation} />
@@ -95,8 +97,7 @@ const TabNavigation = () => {
           <Tab.Screen name="Post" component={PostScreen} />
         </Tab.Group>
       </Tab.Navigator>
-    // </NativeBaseProvider>
-    // </OverlayProvider>
+  
   );
 };
 
