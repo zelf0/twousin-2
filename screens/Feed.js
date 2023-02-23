@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import Posts from "../components/Posts";
 import getFeed from "../services/getFeed";
 import { useState, useEffect } from "react";
@@ -14,6 +14,7 @@ import {
   onSnapshot,
   limit,
 } from "firebase/firestore";
+import Post from "../components/Post";
 
 const Feed = ({ navigation }) => {
   // console.log("feed has ", navigation);
@@ -25,7 +26,8 @@ const Feed = ({ navigation }) => {
       query(
             collection(db, "posts"),
             orderBy("createdAt", "desc"),
-            limit(30)), 
+            // limit(30)
+            ), 
       (snapshot) => {
         setPosts(
               snapshot.docs.map((doc) => ({
@@ -38,19 +40,24 @@ const Feed = ({ navigation }) => {
       });
     return unsubscribe;
   }, [])
+
   // useEffect(() => {
-  //   let q = query(
+  //   const unsubscribe = onSnapshot(
   //     collection(db, "posts"),
-  //     orderBy("createdAt", "desc"),
-  //     //TODO: make it so at the bottom you can fetch more posts
-  //     limit(20)
+  //     (snapshot) => {
+  //       const posts = snapshot.docs
+  //         .map((doc) => ({ id: doc.id, data: doc.data() }))
+  //         .sort((a, b) => b.data.createdAt - a.data.createdAt) // sort by createdAt timestamp in descending order
+  //         .slice(0, 30); // limit to the 30 most recent posts
+  
+  //       setPosts(posts);
+  //     },
+  //     (error) => {
+  //       console.error(error);
+  //     }
   //   );
-  //   onSnapshot(q, (querySnapshot) => {
-  //     setPosts(querySnapshot.docs);
-  //   });
-  //   return () => {
-  //     setState({}); 
-  //   };
+  
+  //   return unsubscribe;
   // }, []);
 
   // const [counter, setCounter] = useState(0);
@@ -87,8 +94,11 @@ const Feed = ({ navigation }) => {
   return (
     <Box width="100%" bg="green">
       {/* <PostButton openDialog = {openDialog}/> */}
-
-      <Posts navigation={navigation} posts={posts} />
+      <ScrollView width = "100%" bg = "primary.500" showsVerticalScrollIndicator={true} > 
+                <Text> Posts </Text>
+                {posts.map((post, idx) => <Post navigation={navigation} postData={post.data} id = {post.id} key = {idx}/>)}
+            </ScrollView>
+      {/* <Posts navigation={navigation} posts={posts} /> */}
     </Box>
   );
 };

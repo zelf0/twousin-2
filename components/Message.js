@@ -1,17 +1,22 @@
 import { Box, Center, Text, Image, HStack, Pressable, Menu, Button } from 'native-base'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import GameMessage from './GameMessage';
 // import { Image } from 'react-native'
-
+import * as Clipboard from 'expo-clipboard';
 
 const auth = getAuth();
 const storage = getStorage();
 
-const Message = ({data, chatId, messageId, onReply, flatListRef, index, highlight, highlighted}) => {
+const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, highlight, highlighted}) => {
 
   const [downloadedImages, setDownloadedImages] = useState([])
+
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(data.message);
+  };
 
  useEffect(() => {
   for (let i = 0; i < data.images?.length; i++) {
@@ -59,10 +64,10 @@ const Message = ({data, chatId, messageId, onReply, flatListRef, index, highligh
         </Pressable>
          }}>
          <Menu.Item onPress={() => {onReply(index, data.message)}}>Reply</Menu.Item>
-         <Menu.Item>Copy</Menu.Item>
+         <Menu.Item onPress={copyToClipboard}>Copy</Menu.Item>
        </Menu>
     </Box>
   )
-}
+})
 
 export default Message

@@ -28,6 +28,9 @@ const CreateChatScreen = ({ navigation }) => {
   // };
 
   const createChat = async () => {
+    if (!input) {
+      return;
+    }
     try {
       console.log("creating chat", input);
       const docRef = await addDoc(collection(db, "chats"), {
@@ -38,9 +41,12 @@ const CreateChatScreen = ({ navigation }) => {
         latestTimestamp:  new Date().toISOString(),
       });
       console.log("Document written with ID: ", docRef.id);
+      navigation.navigate("Lobby");
+      
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+
   };
 
   useEffect(() => {

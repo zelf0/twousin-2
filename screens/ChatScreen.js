@@ -16,6 +16,7 @@ import {
   ZStack,
   FlatList,
   Badge,
+  PresenceTransition,
 } from "native-base";
 import React, { useLayoutEffect, useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableWithoutFeedback } from "react-native";
@@ -42,6 +43,7 @@ import {
 // import * as ImagePicker from 'expo-image-picker';
 import GameLobby from "../components/GameLobby";
 import ChatInput from "../components/ChatInput";
+import Messages from "../components/Messages";
 
 const auth = getAuth();
 const storage = getStorage();
@@ -67,12 +69,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [gameState, setGameState] = useState(null);
   const [replyIdx, setReplyIdx] = useState(null);
   const [replyMessage, setReplyMessage] = useState(null);
-  const [highlighted, setHighlighted] = useState(null);
 
-
-  const highlight = (idx) => {
-    setHighlighted(idx)
-  }
 
   const removePhoto = (imageToRemove) => {
     setImages(images.filter((img) => img != imageToRemove));
@@ -82,7 +79,7 @@ const ChatScreen = ({ navigation, route }) => {
     console.log(idx);
     setReplyIdx(idx);
     setReplyMessage(message);
-  }
+  };
 
   const createNewGame = (type, state) => {
     setGameType(type);
@@ -124,7 +121,7 @@ const ChatScreen = ({ navigation, route }) => {
     console.log("reset state");
     //  console.log("IMAGE.  ", uploadedImages[0]);
     try {
-      console.log("in try statement")
+      console.log("in try statement");
       const docRef = await addDoc(
         collection(db, "chats", route.params.id, "messages"),
         {
@@ -136,7 +133,7 @@ const ChatScreen = ({ navigation, route }) => {
           gameType: gameType,
           gameState: gameState,
           replyIdx: replyIdx,
-          replyMessage: replyMessage
+          replyMessage: replyMessage,
         }
       );
       console.log("added doc ", docRef.id);
@@ -220,12 +217,11 @@ const ChatScreen = ({ navigation, route }) => {
   //     console.log(i);
   //     i++;
   //   }, 1000);
-  
+
   //   return () => {
   //     clearInterval(intervalToken);
   //   }
   // }, [])
-  
 
   return (
     <SafeAreaView>
@@ -261,23 +257,36 @@ const ChatScreen = ({ navigation, route }) => {
             />
           ))}
         </ScrollView> */}
-         <FlatList
-        initialNumToRender={10}
-        bg="darkBlue.800"
-        data={messages}
-        ref={flatListRef}
-        // getItemLayout={(data, index) => (
-        //   {length: 30, offset: 30 * index, index}
-        // )}
-        // initialScrollIndex = {messages.length - 1}
-        // inverted={1}
-        onContentSizeChange={() =>
-          flatListRef.current.scrollToEnd({ animated: true })
-        }
-        renderItem={({item, index}) => <Message highlighted={highlighted} highlight={highlight} flatListRef={flatListRef} onReply={reply} messageId={item.id} index={index} chatId={route.params.id} data={item.data} />}
-        keyExtractor={item => item.id}
-      />
+        {/* <FlatList
+          initialNumToRender={10}
+          bg="darkBlue.800"
+          data={messages}
+          ref={flatListRef}
+          // getItemLayout={(data, index) => (
+          //   {length: 30, offset: 30 * index, index}
+          // )}
+          // initialScrollIndex = {messages.length - 1}
+          // inverted={1}
+          onContentSizeChange={() =>
+            flatListRef.current.scrollToEnd({ animated: true })
+          }
+          renderItem={({ item, index }) => (
+            <Message
+              highlighted={highlighted}
+              highlight={highlight}
+              flatListRef={flatListRef}
+              onReply={reply}
+              messageId={item.id}
+              index={index}
+              chatId={route.params.id}
+              data={item.data}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        /> */}
 
+        <Messages chatId={route.params.id}
+        onReply={reply} /> 
         <Center bottom={0} style={styles.footer}>
           {/* <ScrollView maxH={200}> */}
           {/* {images.map((image, idx) => 
@@ -341,8 +350,26 @@ const ChatScreen = ({ navigation, route }) => {
             <></>
           )}
           {/* </ScrollView> */}
-          {replyIdx !== null ? <Text> Replying to {replyMessage}</Text> : <></>}
-          <ChatInput onSendMessage={sendMessage} onAddMedia={addMedia} onOpenGameLobby={openGameLobby}/>
+          {replyIdx !== null ? (
+            <Box>
+              <Text> Replying to {replyMessage}</Text>
+              <IconButton
+                icon={<Icon size={7} as={Ionicons} name="close" />}
+                onPress={() => {
+                  console.log("close repl")
+                  setReplyIdx(null);
+                  setReplyMessage(null);
+                }}
+              />
+            </Box>
+          ) : (
+            <></>
+          )}
+          <ChatInput
+            onSendMessage={sendMessage}
+            onAddMedia={addMedia}
+            onOpenGameLobby={openGameLobby}
+          />
         </Center>
         {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
