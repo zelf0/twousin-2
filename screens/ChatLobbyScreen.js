@@ -16,6 +16,7 @@ import { getAuth } from "firebase/auth";
 import {
   Ionicons,
 } from "@expo/vector-icons";
+import getNameFromUserId from '../services/getNameFromUserId'
 
 const auth = getAuth();
 
@@ -70,16 +71,20 @@ const enterChat  = (id, chatName) => {
     chatName: chatName,
   });
 }
+
+const getNameFromUsers = (users) => {
+  return getNameFromUserId(users.find((e) => e !== auth.currentUser.uid));
+}
  
  return (
     <Center bgColor="amber.300" w="100%" safeArea p="0"> 
 
       <ScrollView m="0" width="100%" showsVerticalScrollIndicator={true}> 
        
-      {chats.map(({id, data : { chatName }}) => 
+      {chats.map(({id, data : { chatName, privateMessage, users }}) => 
       <ChatListItem 
         id={id}
-        chatName={chatName} 
+        chatName={privateMessage ? getNameFromUsers(users) : chatName} 
         key={id}
         enterChat={enterChat}
         />)}

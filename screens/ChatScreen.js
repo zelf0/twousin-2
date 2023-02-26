@@ -157,28 +157,28 @@ const ChatScreen = ({ navigation, route }) => {
     setReplyMessage(null);
   };
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "chats", route.params.id, "messages"),
-        orderBy("timestamp", "asc")
-      ),
-      (snapshot) => {
-        setMessages(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }))
-        );
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    return unsubscribe;
-  }, []);
-  const scrollViewRef = useRef();
-  const flatListRef = useRef(null);
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(
+  //     query(
+  //       collection(db, "chats", route.params.id, "messages"),
+  //       orderBy("timestamp", "asc")
+  //     ),
+  //     (snapshot) => {
+  //       setMessages(
+  //         snapshot.docs.map((doc) => ({
+  //           id: doc.id,
+  //           data: doc.data(),
+  //         }))
+  //       );
+  //     },
+  //     (error) => {
+  //       console.error(error);
+  //     }
+  //   );
+  //   return unsubscribe;
+  // }, []);
+  // const scrollViewRef = useRef();
+  // const flatListRef = useRef(null);
 
   const uploadImage = async (uri) => {
     // const response = await fetch(uri);

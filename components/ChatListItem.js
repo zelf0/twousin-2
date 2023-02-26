@@ -19,7 +19,6 @@ import {
 import db from "../db";
 
 const ChatListItem = ({ chatName, id, enterChat }) => {
-  const [chat, setChat] = useState(chatName);
   const [lastMessage, setLastMessage] = useState({
     message: "...",
     timestamp: null,
@@ -121,15 +120,14 @@ const ChatListItem = ({ chatName, id, enterChat }) => {
             {/* <Text color="coolGray.800" mt="3" fontWeight="medium" fontSize="xl"> */}
             <HStack d="flex" justifyContent="space-between">
               <Text bold fontSize="md">
-                {chat}
+                {chatName}
               </Text>
               <Text color="darkBlue.500">
-                {" "}
                 {convertDate(lastMessage.timestamp)}{" "}
               </Text>
             </HStack>
             <Text color="dark.300" fontSize="sm">
-              {lastMessage.message}
+              {lastMessage.displayName}: {lastMessage.message}
             </Text>
           </Box>
         );

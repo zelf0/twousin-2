@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Center, Heading, Input, Text, ScrollView, Checkbox } from "native-base";
+import { Button, Center, Heading, Input, Text, ScrollView, Checkbox, Radio, HStack } from "native-base";
 import db from "../db";
 import {
   collection,
@@ -18,6 +18,7 @@ const CreateChatScreen = ({ navigation }) => {
   const [input, setInput] = useState("");
   const [users, setUsers] = useState([]);
   const [groupValue, setGroupValue] = useState([]);
+  const [privateMessage, setPrivateMessage] = useState(false);
 
   // const createChat = async () => {
   //     await db.collection("chats").add({
@@ -28,7 +29,7 @@ const CreateChatScreen = ({ navigation }) => {
   // };
 
   const createChat = async () => {
-    if (!input) {
+    if (!input && !privateMessage) {
       return;
     }
     try {
@@ -39,6 +40,7 @@ const CreateChatScreen = ({ navigation }) => {
         createdBy: auth.currentUser.uid,
         createdAt:  new Date().toISOString(),
         latestTimestamp:  new Date().toISOString(),
+        privateMessage: privateMessage
       });
       console.log("Document written with ID: ", docRef.id);
       navigation.navigate("Lobby");
@@ -70,12 +72,45 @@ const CreateChatScreen = ({ navigation }) => {
   return (
     <Center>
       <Heading> Create Chat </Heading>
+      <Radio.Group name="privateMessageRadioGroup" accessibilityLabel="Private Message or Group Chat" value={privateMessage} onChange={nextValue => {
+    setPrivateMessage(nextValue);
+  }}>
+    <HStack>
+      <Radio value={true} my={1}>
+        Private Message 
+      </Radio>
+      <Radio value={false} my={1}>
+        Group Chat
+      </Radio>
+    </HStack>
+    </Radio.Group>
+
+    {privateMessage ? 
+      <>
+        <ScrollView>
+        <Radio.Group
+          colorScheme="primary"
+          defaultValue={groupValue}
+          accessibilityLabel="choose members"
+          onChange={(nextValue) => {
+            setGroupValue([nextValue]);
+          }}
+        >
+          {users.map(({ id, data: { displayName } }) => (
+            <Radio key={id} value={id} my="1">
+              {displayName}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </ScrollView>
+      
+      </> :
+      <>
       <Input
         placeholder="Name your chat"
         value={input}
         onChangeText={(text) => setInput(text)}
       />
-      {/* <Text> {groupValue} </Text> */}
       <ScrollView>
         {/* {users.map(({id, data : { displayName }}) => 
       <Pressable bgColor="primary.500">
@@ -99,6 +134,8 @@ const CreateChatScreen = ({ navigation }) => {
           ))}
         </Checkbox.Group>
       </ScrollView>
+      </>
+      }
       <Button title="Create chat" onPress={createChat}>
         Create Chat
       </Button>

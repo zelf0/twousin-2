@@ -43,7 +43,6 @@ const Messages = memo(({chatId, onReply}) => {
       }, []);
 
     const flatListRef = useRef();
-    console.log(messages);
 
   return (
     <FlatList
