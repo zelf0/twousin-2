@@ -115,6 +115,9 @@ const TabNavigation = () => {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(async (token) => { 
+            if (!token) {
+              return;
+            }
             setExpoPushToken(token); 
             console.log("tab nav token", token); 
             await setDoc(doc(db, "users", user?.uid), {

@@ -349,6 +349,7 @@ const Quarto = ({ chatId, messageId }) => {
         )}
       </Box>
       <FlatList
+        listKey = "2" 
         data={gameState?.board}
         renderItem={({ item, index }) => (
           <Pressable
@@ -412,10 +413,11 @@ const Quarto = ({ chatId, messageId }) => {
       </Button>
       <Heading display = {gameState?.chosenPiece!== null && !placed ? "none" : "block"}> Select piece for Opponent </Heading>
       <FlatList
-        key={gameState?.availablePieces}
+        listKey = "1"
         data={gameState?.availablePieces}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Pressable
+            key={index}
             isDisabled={gameState?.chosenPiece !== null && !placed}
             _disabled={{
               opacity: 50,
