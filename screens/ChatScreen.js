@@ -40,7 +40,7 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import GameLobby from "../components/GameLobby";
 import ChatInput from "../components/ChatInput";
 import Messages from "../components/Messages";
@@ -94,14 +94,35 @@ const ChatScreen = ({ navigation, route }) => {
 
   const addMedia = async () => {
     //TODO: Commenting this out for now because expo image picker is a meanie pants
-    // let result = await ImagePicker.launchImageLibraryAsync();
-    // if (!result.cancelled) {
-    //   setImages([...images, result.uri]);
-    //   console.log(images);
-    //   // let img = addImage(result.uri)
-    //   // setUri(img);
-    // }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.2,
+    });
+    if (!result.canceled) {
+      setImages([...images, result.assets[0].uri]);
+      console.log(images[0]);
+      // let img = addImage(result.uri)
+      // setUri(img);
+    }
   };
+
+  const uploadImages = async () => {
+    const imageRefs = [];
+    for (let i = 0; i < images?.length; i++) {
+
+      console.log("uploading..", images[i]);
+      // const compressedImageData = (await manipulateAsync(images[i], { resize: { width: 250 } }));
+      // const uploadUrl = await uploadImage(compressedImageData);
+      const uploadUrl = await uploadImage(images[i]);
+      console.log("upload url", uploadUrl);
+      imageRefs.push();
+      // setUploadedImages([...uploadedImages, uploadUrl]);
+      // console.log("images", uploadedImages[i]);
+    }
+    return imageRefs;
+  }
 
   const sendMessage = async (input) => {
     if (!input && images.length == 0 && !gameType) {
@@ -110,14 +131,19 @@ const ChatScreen = ({ navigation, route }) => {
 
     console.log("start function");
     Keyboard.dismiss();
+    // const imageRefs = await uploadImages();
+    const imageRefs = [];
     for (let i = 0; i < images?.length; i++) {
-      // console.log("uploading..", images[i]);
+      console.log("uploading..", images[i]);
       // const compressedImageData = (await manipulateAsync(images[i], { resize: { width: 250 } }));
       // const uploadUrl = await uploadImage(compressedImageData);
-      // const uploadUrl = await uploadImage(images[i]);
+      const uploadUrl = await uploadImage(images[i]);
+      console.log("upload url", uploadUrl);
       // setUploadedImages([...uploadedImages, uploadUrl]);
       // console.log("images", uploadedImages[i]);
+      imageRefs.push(uploadUrl);
     }
+  
 
     console.log("reset state");
     //  console.log("IMAGE.  ", uploadedImages[0]);
@@ -131,7 +157,7 @@ const ChatScreen = ({ navigation, route }) => {
           message: input,
           displayName: auth.currentUser.displayName,
           senderId: auth.currentUser.uid,
-          images: uploadedImages,
+          images: imageRefs,
           gameType: gameType,
           gameState: gameState,
           replyIdx: replyIdx,
@@ -145,7 +171,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
     try {
       await updateDoc(doc(db, "families", 
-      "Nuw0XDoShVApqgv0eDHe", "chats", route.params.id), {
+      FAMILY_TOKEN, "chats", route.params.id), {
         latestTimestamp: new Date().toISOString(),
       });
     } catch (e) {
