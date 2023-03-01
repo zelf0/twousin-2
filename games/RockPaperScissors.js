@@ -12,6 +12,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import db from "../db";
+import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
 
 const RockPaperScissors = ({ gameState, chatId, messageId }) => {
   // state schema:
@@ -45,7 +46,8 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
     // console.log("UPDATES COUNTER ", updates);
     const updateDatabase = async () => {
       try {
-        await updateDoc(doc(db, "chats", chatId, "messages", messageId), {
+        await updateDoc(doc(db, "families", 
+        FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
           timestamp: new Date().toISOString(),
           gameState: {
             players: updatedPlayers,

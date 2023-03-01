@@ -34,7 +34,8 @@ const ChatListItem = ({ chatName, id, enterChat }) => {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "chats", id, "messages"),
+        collection(db, "families", 
+        "Nuw0XDoShVApqgv0eDHe", "chats", id, "messages"),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {

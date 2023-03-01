@@ -44,6 +44,7 @@ import {
 import GameLobby from "../components/GameLobby";
 import ChatInput from "../components/ChatInput";
 import Messages from "../components/Messages";
+import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
 
 const auth = getAuth();
 const storage = getStorage();
@@ -123,7 +124,8 @@ const ChatScreen = ({ navigation, route }) => {
     try {
       console.log("in try statement");
       const docRef = await addDoc(
-        collection(db, "chats", route.params.id, "messages"),
+        collection(db, "families", 
+        FAMILY_TOKEN,"chats", route.params.id, "messages"),
         {
           timestamp: new Date().toISOString(),
           message: input,
@@ -142,7 +144,8 @@ const ChatScreen = ({ navigation, route }) => {
       alert("Error adding document: ", e);
     }
     try {
-      await updateDoc(doc(db, "chats", route.params.id), {
+      await updateDoc(doc(db, "families", 
+      "Nuw0XDoShVApqgv0eDHe", "chats", route.params.id), {
         latestTimestamp: new Date().toISOString(),
       });
     } catch (e) {
@@ -156,29 +159,6 @@ const ChatScreen = ({ navigation, route }) => {
     setReplyIdx(null);
     setReplyMessage(null);
   };
-
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(
-  //     query(
-  //       collection(db, "chats", route.params.id, "messages"),
-  //       orderBy("timestamp", "asc")
-  //     ),
-  //     (snapshot) => {
-  //       setMessages(
-  //         snapshot.docs.map((doc) => ({
-  //           id: doc.id,
-  //           data: doc.data(),
-  //         }))
-  //       );
-  //     },
-  //     (error) => {
-  //       console.error(error);
-  //     }
-  //   );
-  //   return unsubscribe;
-  // }, []);
-  // const scrollViewRef = useRef();
-  // const flatListRef = useRef(null);
 
   const uploadImage = async (uri) => {
     // const response = await fetch(uri);
@@ -211,6 +191,7 @@ const ChatScreen = ({ navigation, route }) => {
     return storageRef.toString();
   };
 
+
   // useEffect(() => {
   //   let i = 0;
   //   const intervalToken = setInterval(() => {
@@ -239,51 +220,6 @@ const ChatScreen = ({ navigation, route }) => {
         keyboardVerticalOffset={100}
       >
         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-        {/* <ScrollView
-          height="500px"
-          flex={1}
-          bg="darkBlue.800"
-          ref={scrollViewRef}
-          onContentSizeChange={() =>
-            scrollViewRef.current.scrollToEnd({ animated: true })
-          }
-        >
-          {messages.map(({ id, data }) => (
-            <Message
-              key={id}
-              messageId={id}
-              chatId={route.params.id}
-              data={data}
-            />
-          ))}
-        </ScrollView> */}
-        {/* <FlatList
-          initialNumToRender={10}
-          bg="darkBlue.800"
-          data={messages}
-          ref={flatListRef}
-          // getItemLayout={(data, index) => (
-          //   {length: 30, offset: 30 * index, index}
-          // )}
-          // initialScrollIndex = {messages.length - 1}
-          // inverted={1}
-          onContentSizeChange={() =>
-            flatListRef.current.scrollToEnd({ animated: true })
-          }
-          renderItem={({ item, index }) => (
-            <Message
-              highlighted={highlighted}
-              highlight={highlight}
-              flatListRef={flatListRef}
-              onReply={reply}
-              messageId={item.id}
-              index={index}
-              chatId={route.params.id}
-              data={item.data}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        /> */}
 
         <Messages chatId={route.params.id}
         onReply={reply} /> 

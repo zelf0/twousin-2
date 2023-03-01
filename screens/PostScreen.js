@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Comment from '../components/Comment'
 import CommentForm from '../components/CommentForm'
 import db from '../db'
+import FAMILY_TOKEN from '../services/FAMILY_TOKEN'
 
 const PostScreen = ({route}) => {
 
@@ -13,7 +14,8 @@ const PostScreen = ({route}) => {
 
     const getPost = async () => {
         console.log(id);
-        const docRef = doc(db, "posts", route.params.id);
+        const docRef = doc(db, "families", 
+        FAMILY_TOKEN, "posts", route.params.id);
         const docSnap = await getDoc(docRef);
         // console.log(docSnap);
         setPost(docSnap.data());

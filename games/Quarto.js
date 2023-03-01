@@ -20,6 +20,7 @@ import { useState, useLayoutEffect, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import db from "../db";
+import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
 // import Award from './src/assets/images/award.svg';
 
 const auth = getAuth();
@@ -106,7 +107,8 @@ const Quarto = ({ chatId, messageId }) => {
 
   useLayoutEffect(() => {
     const unsubscribe = onSnapshot(
-      doc(db, "chats", chatId, "messages", messageId),
+      doc(db, "families", 
+      FAMILY_TOKEN, "chats", chatId, "messages", messageId),
       (doc) => {
         setGameState(doc.data().gameState);
       },
@@ -194,7 +196,8 @@ const Quarto = ({ chatId, messageId }) => {
       (e) => e != nextChosenPiece
     );
     try {
-      await updateDoc(doc(db, "chats", chatId, "messages", messageId), {
+      await updateDoc(doc(db, "families", 
+      FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
         timestamp: new Date().toISOString(),
         gameState: {
           players: gameState.players,
@@ -224,7 +227,8 @@ const Quarto = ({ chatId, messageId }) => {
       return;
     }
     try {
-      await updateDoc(doc(db, "chats", chatId, "messages", messageId), {
+      await updateDoc(doc(db, "families", 
+      FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
         timestamp: new Date().toISOString(),
         gameState: {
           players: [gameState.players[0], auth.currentUser.uid],
@@ -250,7 +254,8 @@ const Quarto = ({ chatId, messageId }) => {
       idx == chosenSquare ? gameState.chosenPiece : elem
     );
     try {
-      await updateDoc(doc(db, "chats", chatId, "messages", messageId), {
+      await updateDoc(doc(db, "families", 
+      FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
         timestamp: new Date().toISOString(),
         gameState: {
           players: gameState.players,
@@ -333,7 +338,7 @@ const Quarto = ({ chatId, messageId }) => {
               style={{
                 width: 70,
                 height: 70,
-                resizeMode: "center",
+                // resizeMode: "center",
               }}
               alt="Alt Text"
               source={pieces[gameState?.chosenPiece - 1]?.icon}
@@ -365,10 +370,11 @@ const Quarto = ({ chatId, messageId }) => {
                   <Image
                     borderWidth={9}
                     borderColor="green.300"
+                    size="xs"
                     style={{
                       width: 70,
                       height: 70,
-                      resizeMode: "center",
+                      // resizeMode: "center",
                     }}
                     alt="Alt text"
                     source={pieces[gameState?.chosenPiece - 1].icon}
@@ -381,7 +387,7 @@ const Quarto = ({ chatId, messageId }) => {
                   style={{
                     width: 70,
                     height: 70,
-                    resizeMode: "center",
+                    // resizeMode: "stretch",
                   }}
                   alt="Alt Text"
                   source={pieces[item - 1]?.icon}
@@ -430,7 +436,7 @@ const Quarto = ({ chatId, messageId }) => {
                     style={{
                       width: 45,
                       height: 45,
-                      resizeMode: "center",
+                      // resizeMode: "stretch",
                     }}
                     alt="Alt Text"
                     source={pieces[item - 1]?.icon}

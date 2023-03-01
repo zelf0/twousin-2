@@ -20,6 +20,7 @@
 
 const usersTable = [];
 const populateTable = async () => {
+    console.log("populating users table");
     const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
@@ -30,8 +31,10 @@ const populateTable = async () => {
 }
 
 populateTable();
+
 const getNameFromUserId = (id) => {
-    return usersTable.find((e) => e.id == id).displayName;
+   console.log(usersTable.find((e) => e.id == id)?.displayName)
+    return usersTable.find((e) => e.id == id)?.displayName;
 }
   
 export default getNameFromUserId;

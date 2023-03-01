@@ -8,7 +8,8 @@ import {
   } from "firebase/firestore";
 
 const getFeed = async () => {
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "families", 
+    "Nuw0XDoShVApqgv0eDHe", "posts"), orderBy("createdAt", "desc"));
     // const querySnapshot = await getDocs(q);
     // return querySnapshot.docs;
 

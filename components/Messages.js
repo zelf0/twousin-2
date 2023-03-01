@@ -11,6 +11,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import FAMILY_TOKEN from '../services/FAMILY_TOKEN';
 
 const Messages = memo(({chatId, onReply}) => {
 
@@ -24,7 +25,8 @@ const Messages = memo(({chatId, onReply}) => {
     useEffect(() => {
         const unsubscribe = onSnapshot(
           query(
-            collection(db, "chats", chatId, "messages"),
+            collection(db, "families", 
+            FAMILY_TOKEN, "chats", chatId, "messages"),
             orderBy("timestamp", "asc")
           ),
           (snapshot) => {

@@ -25,7 +25,9 @@ import Settings from "../screens/Settings";
 import { doc, setDoc } from "firebase/firestore";
 import db from "../db";
 import { getAuth } from "firebase/auth";
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import * as Device from 'expo-device';
+import * as ExpoNotifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +43,37 @@ const MyTheme = {
     notification: "rgb(255, 69, 58)",
   },
 };
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } = await ExpoNotifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await ExpoNotifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await ExpoNotifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    ExpoNotifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
 
 const TabNavigation = () => {
 
@@ -60,6 +93,10 @@ const TabNavigation = () => {
   const navigation = useNavigation();
   const auth = getAuth();
   const user = auth.currentUser;
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   // async function requestUserPermission() {
   //   const authorizationStatus = await messaging().requestPermission();
@@ -75,6 +112,33 @@ const TabNavigation = () => {
   //     });
   //     // console.log("token: ", token, fcmToken);
   //   }
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(async (token) => { 
+            setExpoPushToken(token); 
+            console.log("tab nav token", token); 
+            await setDoc(doc(db, "users", user?.uid), {
+            displayName: user?.displayName,
+            notificationToken: token
+          });
+        });
+    notificationListener.current = ExpoNotifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+
+    responseListener.current = ExpoNotifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+
+    return () => {
+      ExpoNotifications.removeNotificationSubscription(notificationListener.current);
+      ExpoNotifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+
 
 
 

@@ -6,6 +6,7 @@ import {
   } from "firebase/firestore";
   
 import { getAuth } from "firebase/auth";
+import FAMILY_TOKEN from "./FAMILY_TOKEN";
 
  
 
@@ -18,7 +19,8 @@ const createNewPost = async (post) => {
   console.log(user, user?.providerData, user?.providerData?.email);
     try {
       console.log('posting', post)
-      const docRef = await addDoc(collection(db, "posts"), {
+      const docRef = await addDoc(collection(db, "families", 
+      FAMILY_TOKEN, "posts"), {
         userHandle: user ? user?.displayName : "no user",
         // userHandle: "current user",
         title: post.title,

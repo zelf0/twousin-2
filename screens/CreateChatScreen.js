@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { Pressable } from "react-native";
 import { getAuth } from "firebase/auth";
+import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
 
 const auth = getAuth();
 
@@ -34,7 +35,8 @@ const CreateChatScreen = ({ navigation }) => {
     }
     try {
       console.log("creating chat", input);
-      const docRef = await addDoc(collection(db, "chats"), {
+      const docRef = await addDoc(collection(db, "families", 
+      FAMILY_TOKEN, "chats"), {
         chatName: input,
         users: [auth.currentUser.uid, ...groupValue],
         createdBy: auth.currentUser.uid,

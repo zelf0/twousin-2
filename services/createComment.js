@@ -8,6 +8,7 @@ import {
   
   import db from "../db";
   import { getAuth } from "firebase/auth";
+import FAMILY_TOKEN from "./FAMILY_TOKEN";
   
   const getPostReferenceForCommenting = async (id) => {
   
@@ -19,7 +20,8 @@ import {
       // let querySnapshot = await getDocs(q)
       // console.log(querySnapshot.docs.length);
   
-      const docRef = doc(db, "posts", id);
+      const docRef = doc(db, "families", 
+      FAMILY_TOKEN, "posts", id);
       const docSnap = await getDoc(docRef);
       
       console.log(docRef)

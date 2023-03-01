@@ -1,9 +1,9 @@
-import { View } from 'native-base'
+import { Text } from 'native-base'
 import React from 'react'
 
 const Poll = ({post}) => {
   return (
-    <View>Poll</View>
+    <Text>Poll</Text>
   )
 }
 

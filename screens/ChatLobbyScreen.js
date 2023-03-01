@@ -17,6 +17,7 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import getNameFromUserId from '../services/getNameFromUserId'
+import FAMILY_TOKEN from '../services/FAMILY_TOKEN'
 
 const auth = getAuth();
 
@@ -49,7 +50,8 @@ const ChatLobbyScreen = ({navigation, route}) => {
 useEffect(() => {
 
   const unsubscribe = onSnapshot(
-    query(collection(db, "chats"),
+    query(collection(db, "families", 
+    FAMILY_TOKEN, "chats"),
     where("users", "array-contains", auth.currentUser.uid),
     orderBy("latestTimestamp", "desc")), 
     (snapshot) => {

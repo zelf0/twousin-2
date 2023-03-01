@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "twousin-expo",
+    "owner": "twousin",
     "slug": "twousin-expo",
     "version": "1.0.0",
     "orientation": "portrait",
