@@ -349,7 +349,8 @@ const Quarto = ({ chatId, messageId }) => {
         )}
       </Box>
       <FlatList
-        listKey = "2" 
+        keyExtractor={(item, index) => index}
+        listKey="2"
         data={gameState?.board}
         renderItem={({ item, index }) => (
           <Pressable
@@ -413,7 +414,10 @@ const Quarto = ({ chatId, messageId }) => {
       </Button>
       <Heading display = {gameState?.chosenPiece!== null && !placed ? "none" : "block"}> Select piece for Opponent </Heading>
       <FlatList
-        listKey = "1"
+        keyExtractor={(item) => item}
+        // key="1"
+        listKey="1"
+        // cellKey="1"
         data={gameState?.availablePieces}
         renderItem={({ item, index }) => (
           <Pressable
@@ -426,8 +430,6 @@ const Quarto = ({ chatId, messageId }) => {
               choosePiece(item);
             }}
           >
-            {({ isHovered, isFocused, isPressed }) => {
-              return (
                 <Box
                   borderRadius="5"
                   p="2"
@@ -442,14 +444,8 @@ const Quarto = ({ chatId, messageId }) => {
                     }}
                     alt="Alt Text"
                     source={pieces[item - 1]?.icon}
-                    // source={{
-                    //   uri: `assets/quarto-pieces/${pieces[piece].icon}.png`,
-                    // }}
                   />
-                  {/* <Text> {item} </Text> */}
                 </Box>
-              );
-            }}
           </Pressable>
         )}
         numColumns={6}
