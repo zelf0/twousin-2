@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Comment from '../components/Comment'
 import CommentForm from '../components/CommentForm'
 import db from '../db'
-import FAMILY_TOKEN from '../services/FAMILY_TOKEN'
+import { FAMILY_TOKEN } from '../services/family-module'
 
 const PostScreen = ({route}) => {
 

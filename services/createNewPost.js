@@ -6,7 +6,7 @@ import {
   } from "firebase/firestore";
   
 import { getAuth } from "firebase/auth";
-import FAMILY_TOKEN from "./FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "./family-module";
 
  
 

@@ -7,12 +7,12 @@ import {
   Input,
   Text,
   TextArea,
+  Image
 } from "native-base";
 import React from "react";
 import BottomNav from "../components/BottomNav";
 import { useState } from "react";
-// import createNewPost from '../services/createNewPost'
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uuid from "uuid";
@@ -22,7 +22,7 @@ import db from "../db";
 import { collection, addDoc } from "firebase/firestore";
 
 import { getAuth } from "firebase/auth";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "../services/family-module";
 
 // import * as firebase from 'firebase';
 
@@ -81,6 +81,7 @@ const CreatePost = ({ navigation }) => {
     // if (!input && !privateMessage) {
     //   return;
     // }
+    const uploadUrl = await uploadImage(uri);
     try {
       console.log("creating post", title);
       const docRef = await addDoc(collection(db, "families", 
@@ -94,7 +95,7 @@ const CreatePost = ({ navigation }) => {
         topics: topics,
         flair: flair,
         type: selected,
-        uri: uri,
+        uri: uploadUrl,
       });
       // const docRef = await addDoc(collection(db, "chats"), {
       //   chatName: input,
@@ -111,13 +112,27 @@ const CreatePost = ({ navigation }) => {
     }
   };
 
+  // const onChooseImagePress = async () => {
+  //   //TODO: Commenting this out because expo-image-picker is a brokie broke boy
+  //   // let result = await ImagePicker.launchImageLibraryAsync();
+  //   // if (!result.cancelled) {
+  //   //   const uploadUrl = await uploadImage(result.uri);
+  //   //   setUri(uploadUrl);
+  //   // }
+  // };
+
   const onChooseImagePress = async () => {
-    //TODO: Commenting this out because expo-image-picker is a brokie broke boy
-    // let result = await ImagePicker.launchImageLibraryAsync();
-    // if (!result.cancelled) {
-    //   const uploadUrl = await uploadImage(result.uri);
-    //   setUri(uploadUrl);
-    // }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.2,
+    });
+    if (!result.canceled) {
+      // setImages([...images, result.assets[0].uri]);
+      // console.log(images[0]);
+      setUri(result.assets[0].uri);
+    }
   };
 
   const uploadImage = async (uri) => {
@@ -254,6 +269,12 @@ const CreatePost = ({ navigation }) => {
           <Button title="Choose Image..." onPress={onChooseImagePress}>
             Choose Image...
           </Button>
+          {uri ? <Image
+                      m="1"
+                      source={{ uri: uri }}
+                      alt="Image - No alt text"
+                      size="xl"
+                    /> : <></>}
         </Box>
         <Box display={selected === "poll" ? "flex" : "none"}>
           <Text> Todo </Text>

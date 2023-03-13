@@ -44,7 +44,7 @@ import * as ImagePicker from 'expo-image-picker';
 import GameLobby from "../components/GameLobby";
 import ChatInput from "../components/ChatInput";
 import Messages from "../components/Messages";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "../services/family-module";
 
 const auth = getAuth();
 const storage = getStorage();
@@ -93,7 +93,6 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   const addMedia = async () => {
-    //TODO: Commenting this out for now because expo image picker is a meanie pants
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

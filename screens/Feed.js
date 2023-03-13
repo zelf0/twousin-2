@@ -14,7 +14,7 @@ import {
   limit,
 } from "firebase/firestore";
 import Post from "../components/Post";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { familyId, FAMILY_TOKEN } from "../services/family-module";
 
 const Feed = ({ navigation }) => {
   // console.log("feed has ", navigation);
@@ -51,6 +51,31 @@ const Feed = ({ navigation }) => {
   // }, [])
 
   useEffect(() => {
+
+    // familyId().then((famId) => {
+    //   console.log("in feed", famId);
+    //   if (!famId) {
+    //     console.log("fam is empty");
+    //     return;
+    //   }
+    //   const unsubscribe = onSnapshot(
+    //     query(collection(db, "families", 
+    //     famId, "posts"), orderBy("createdAt", "desc")),
+    //     (snapshot) => {
+    //       setPosts(
+    //         snapshot.docs.map((doc) => ({
+    //           id: doc.id,
+    //           data: doc.data(),
+    //         }))
+    //       );
+    //     },
+    //     (error) => {
+    //       console.error(error);
+    //     }
+    //   );
+    //   return unsubscribe;
+      
+    // })
     const unsubscribe = onSnapshot(
       query(collection(db, "families", 
       FAMILY_TOKEN, "posts"), orderBy("createdAt", "desc")),

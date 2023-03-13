@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Modal, Box, Pressable, Center, Text } from 'native-base'
+import { Modal, Box, Pressable, Center, Text, ScrollView } from 'native-base'
 import GameStage from './GameStage';
+import VirtualizedScrollView from './VirtualizedScrollView';
  
 const GameMessage = ({self, gameState, gameType, chatId, messageId}) => {
 
@@ -9,7 +10,9 @@ const GameMessage = ({self, gameState, gameType, chatId, messageId}) => {
     <Box>
     <Modal isOpen={gameStageOpen} onClose={setGameStageOpen} size="full">
         <Modal.Content h="90%">
+          <VirtualizedScrollView>
         <GameStage chatId={chatId} messageId={messageId} gameState={gameState} gameType={gameType}/>
+        </VirtualizedScrollView>
         </Modal.Content>
     </Modal>
     {/* <Box m={2} alignItems = {self ? "flex-end" : "flex-start"}>

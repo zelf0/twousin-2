@@ -20,7 +20,7 @@ import { useState, useLayoutEffect, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import db from "../db";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "../services/family-module";
 // import Award from './src/assets/images/award.svg';
 
 const auth = getAuth();
@@ -349,8 +349,8 @@ const Quarto = ({ chatId, messageId }) => {
         )}
       </Box>
       <FlatList
-        keyExtractor={(item, index) => index}
-        listKey="2"
+         listKey={(item, index) => `_key${index.toString()}`}
+         keyExtractor={(item, index) => `_key${index.toString()}`}
         data={gameState?.board}
         renderItem={({ item, index }) => (
           <Pressable
@@ -416,7 +416,7 @@ const Quarto = ({ chatId, messageId }) => {
       <FlatList
         keyExtractor={(item) => item}
         // key="1"
-        listKey="1"
+        listKey={(item) => item}
         // cellKey="1"
         data={gameState?.availablePieces}
         renderItem={({ item, index }) => (

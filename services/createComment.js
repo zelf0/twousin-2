@@ -8,7 +8,7 @@ import {
   
   import db from "../db";
   import { getAuth } from "firebase/auth";
-import FAMILY_TOKEN from "./FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "./family-module";
   
   const getPostReferenceForCommenting = async (id) => {
   

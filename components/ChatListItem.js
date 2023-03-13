@@ -17,6 +17,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import db from "../db";
+import { FAMILY_TOKEN } from "../services/family-module";
 
 const ChatListItem = ({ chatName, id, enterChat }) => {
   const [lastMessage, setLastMessage] = useState({
@@ -35,7 +36,7 @@ const ChatListItem = ({ chatName, id, enterChat }) => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "families", 
-        "Nuw0XDoShVApqgv0eDHe", "chats", id, "messages"),
+        FAMILY_TOKEN, "chats", id, "messages"),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {

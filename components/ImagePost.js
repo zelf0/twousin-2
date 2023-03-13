@@ -31,9 +31,9 @@ const ImagePost = ({post}) => {
           </Heading>
           </HStack>
           <Heading size="lg"> {post.title} </Heading>
-          <Image source={{
+          {imageURL ? <Image source={{
       uri: imageURL
-    }} style={{width: 300, height: 230}} alt="Alternate Text" w="100%"/>
+    }} style={{width: 300, height: 230}} alt="Alternate Text" w="100%"/> : <Text> Uploading Image... </Text>}
     </View>
   )
 }

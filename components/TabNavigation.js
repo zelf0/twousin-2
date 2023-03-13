@@ -14,7 +14,7 @@ import ChatLobbyScreen from "../screens/ChatLobbyScreen";
 import CreatePost from "../screens/CreatePost";
 import Notifications from "../screens/Notifications";
 import BottomNav from "../components/BottomNav";
-
+import { familyId } from "../services/family-module"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginForm from "../screens/LoginForm";
@@ -22,7 +22,7 @@ import SignUpForm from "../screens/SignUpForm";
 import { useNavigation } from "@react-navigation/native";
 import PostScreen from "../screens/PostScreen";
 import Settings from "../screens/Settings";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import db from "../db";
 import { getAuth } from "firebase/auth";
 import { useState, useRef, useEffect } from 'react';
@@ -86,6 +86,17 @@ const TabNavigation = () => {
       
   //   }
   // }, [])
+useEffect(() => {
+  console.log("hey fam")
+  // familyId(false).then((famId) => {
+  //   console.log(famId);
+
+  // })
+
+  // return () => {
+  //   second
+  // }
+}, [])
 
 
 
@@ -120,15 +131,15 @@ const TabNavigation = () => {
             }
             setExpoPushToken(token); 
             console.log("tab nav token", token); 
-            await setDoc(doc(db, "users", user?.uid), {
+            await updateDoc(doc(db, "users", user?.uid), {
             displayName: user?.displayName,
+            // familyId: user?.familyId,
             notificationToken: token
           });
         });
     notificationListener.current = ExpoNotifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
     });
-
 
     responseListener.current = ExpoNotifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
@@ -140,7 +151,6 @@ const TabNavigation = () => {
       ExpoNotifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
 
 
 

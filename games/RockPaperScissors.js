@@ -12,7 +12,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import db from "../db";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "../services/family-module";
 
 const RockPaperScissors = ({ gameState, chatId, messageId }) => {
   // state schema:

@@ -11,7 +11,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import FAMILY_TOKEN from '../services/FAMILY_TOKEN';
+import { FAMILY_TOKEN } from '../services/family-module';
 
 const Messages = memo(({chatId, onReply}) => {
 

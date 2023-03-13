@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { Pressable } from "react-native";
 import { getAuth } from "firebase/auth";
-import FAMILY_TOKEN from "../services/FAMILY_TOKEN";
+import { FAMILY_TOKEN } from "../services/family-module";
 
 const auth = getAuth();
 

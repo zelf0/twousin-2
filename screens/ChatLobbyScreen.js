@@ -10,14 +10,15 @@ import {
   where,
   query,
   onSnapshot,
-  limit,
+  getDoc,
+  limit
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import {
   Ionicons,
 } from "@expo/vector-icons";
 import getNameFromUserId from '../services/getNameFromUserId'
-import FAMILY_TOKEN from '../services/FAMILY_TOKEN'
+import { FAMILY_TOKEN } from '../services/family-module'
 
 const auth = getAuth();
 
@@ -60,6 +61,11 @@ useEffect(() => {
               id: doc.id,
               data: doc.data(),
             })))
+      getLatestMessageFromChat().then((message) => {
+        console.log(message)
+        //modify chats so each chat also has a message field
+      })
+      
     },
     (error) => {
       console.error(error);
@@ -72,6 +78,12 @@ const enterChat  = (id, chatName) => {
     id: id,
     chatName: chatName,
   });
+}
+
+const getLatestMessageFromChat = async (chatId) => {
+
+
+
 }
 
 const getNameFromUsers = (users) => {

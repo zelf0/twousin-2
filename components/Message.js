@@ -22,7 +22,10 @@ const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, hig
   for (let i = 0; i < data.images?.length; i++) {
     getDownloadURL(ref(storage, data.images[i])).then((url) => {
       setDownloadedImages([...downloadedImages, url]);
-    }).catch((e) => {console.log(e)});
+    }).catch((e) => {
+      setDownloadedImages([...downloadedImages, ""]);
+      console.log(e);
+    });
   }
  return () => {
     setDownloadedImages([]);
@@ -57,9 +60,13 @@ const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, hig
           {data.gameType ? <GameMessage chatId={chatId} messageId={messageId} gameState={data.gameState} gameType={data.gameType} self={self} /> : <></>}
             <Text fontSize={17} color={self ? "white" : "primary.500"}> {data.message} </Text>
             {downloadedImages?.map((image, idx) => 
-              <Image key={idx} source={{
+            <Box key={idx} >
+              {(image) ? <Image key={idx} source={{
                 uri: image
-              }} size="xl" alt="Alternate Text" />
+              }} size="xl" alt="Alternate Text" style={{
+                resizeMode: "contain",
+              }}/> : <Text> Uploading Image... </Text>}      
+            </Box >     
             )}
         </Pressable>
          }}>
