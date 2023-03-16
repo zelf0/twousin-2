@@ -81,7 +81,7 @@ const CreatePost = ({ navigation }) => {
     // if (!input && !privateMessage) {
     //   return;
     // }
-    const uploadUrl = await uploadImage(uri);
+    const uploadUrl = uri ? await uploadImage(uri) : "";
     try {
       console.log("creating post", title);
       const docRef = await addDoc(collection(db, "families", 

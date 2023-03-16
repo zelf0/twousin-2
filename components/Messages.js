@@ -48,7 +48,7 @@ const Messages = memo(({chatId, onReply}) => {
 
   return (
     <FlatList
-    initialNumToRender={10}
+    // initialNumToRender={10}
     bg="darkBlue.800"
     data={messages}
     ref={flatListRef}

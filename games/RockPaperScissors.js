@@ -7,14 +7,17 @@ import {
   HStack,
   IconButton,
   Text,
+  Heading,
+  VStack
 } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import db from "../db";
 import { FAMILY_TOKEN } from "../services/family-module";
+import getNameFromUserId from "../services/getNameFromUserId";
 
-const RockPaperScissors = ({ gameState, chatId, messageId }) => {
+const RockPaperScissors = ({ chatId, messageId }) => {
   // state schema:
   // {
   //     players : [uid, uid],
@@ -24,49 +27,66 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
   const [selected, setSelected] = useState(0);
   // const [updatedGameState, setUpdatedGameState] = useState(undefined);
   const [selections, setSelections] = useState(undefined);
-  const [updatedPlayers, setUpdatedPlayers] = useState(undefined);
+  // const [updatedPlayers, setUpdatedPlayers] = useState(undefined);
   const [gameOver, setGameOver] = useState(undefined);
   const [winner, setWinner] = useState(undefined);
   const [updates, setUpdates] = useState(0);
+  const [gameState, setGameState] = useState(null);
+
 
   useEffect(() => {
-    console.log("he");
-    console.log(updatedPlayers, gameOver, winner, selections);
-    if (
-      selections === undefined ||
-      updatedPlayers === undefined ||
-      gameOver === undefined ||
-      winner === undefined
-    ) {
-      return;
-    }
+    const unsubscribe = onSnapshot(
+      doc(db, "families", 
+      FAMILY_TOKEN, "chats", chatId, "messages", messageId),
+      (doc) => {
+        setGameState(doc.data().gameState);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+    return unsubscribe;
+  }, []);
+
+
+  // useEffect(() => {
+    // console.log("he");
+    // console.log(updatedPlayers, gameOver, winner, selections);
+    // if (
+    //   selections === undefined ||
+    //   updatedPlayers === undefined ||
+    //   gameOver === undefined ||
+    //   winner === undefined
+    // ) {
+    //   return;
+    // }
     console.log("ok we're in biz");
     //   setUpdatedGameState({players: updatedPlayers, selections: selections, gameOver: gameOver, winner: winner})
     // setUpdates(updates + 1);
     // console.log("UPDATES COUNTER ", updates);
-    const updateDatabase = async () => {
-      try {
-        await updateDoc(doc(db, "families", 
-        FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
-          timestamp: new Date().toISOString(),
-          gameState: {
-            players: updatedPlayers,
-            selections: selections,
-            gameOver: gameOver,
-            winner: winner,
-          },
-        });
-      } catch (e) {
-        console.error("Error adding document: ", e);
-        alert("Error adding document: ", e);
-      }
-    };
+    // const updateDatabase = async () => {
+    //   try {
+    //     await updateDoc(doc(db, "families", 
+    //     FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
+    //       timestamp: new Date().toISOString(),
+    //       gameState: {
+    //         players: updatedPlayers,
+    //         selections: selections,
+    //         gameOver: gameOver,
+    //         winner: winner,
+    //       },
+    //     });
+    //   } catch (e) {
+    //     console.error("Error adding document: ", e);
+    //     alert("Error adding document: ", e);
+    //   }
+    // };
 
-    updateDatabase();
-    return () => {
-      // setUpdates(0);
-    };
-  }, [updatedPlayers, selections, gameOver, winner]);
+    // updateDatabase();
+    // return () => {
+    //   // setUpdates(0);
+    // };
+  // }, [updatedPlayers, selections, gameOver, winner]);
 
   // useEffect(() => {
   //     if (updatedPlayers === undefined) { return }
@@ -87,6 +107,7 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
   // }, [updatedGameState])
 
   const sendMove = async () => {
+    let updatedPlayers = [];
     //update the game state
     console.log(gameState);
     let playerIndex = gameState?.players?.indexOf(auth.currentUser.uid);
@@ -99,23 +120,23 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
       //if it's not full, add player to the game
       for (let i = 0; i < gameState?.players?.length; i++) {
         if (!gameState.players[i]) {
-          const updatedPlayersTemp = gameState.players;
-          updatedPlayersTemp[i] = auth.currentUser.uid;
-          console.log(updatedPlayers);
-          setUpdatedPlayers(updatedPlayersTemp);
-          console.log(updatedPlayers);
+          updatedPlayers = gameState.players;
+          updatedPlayers[i] = auth.currentUser.uid;
+          // console.log(updatedPlayers);
+          // setUpdatedPlayers(updatedPlayersTemp);
+          // console.log(updatedPlayers);
           playerIndex = i;
         }
       }
     }
     //if the're alread in the game, no need to update, so just set updated players to what it was before
     else {
-      setUpdatedPlayers(gameState.players);
+      updatedPlayers = gameState.players;
     }
     console.log("player index", playerIndex);
     const updatedSelections = gameState.selections;
     updatedSelections[playerIndex] = selected;
-    setSelections(updatedSelections);
+    // setSelections(updatedSelections);
     if (updatedSelections[0] && updatedSelections[1]) {
       //both selections are made, so calculate results
       setWinner(calculateWinner(updatedSelections));
@@ -125,19 +146,24 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
       setGameOver(false);
       setWinner("");
     }
-    // const updatedGameState = {players: updatedPlayers, selections: updatedSelections, gameOver: gameOver, winner: winner};
 
-    // console.log(updatedGameState);
 
-    // try {
-    //     await updateDoc(doc(db, "chats", chatId, "messages", messageId), {
-    //       timestamp: new Date().toISOString(),
-    //       gameState: updatedGameState,
-    //     });
-    //   } catch (e) {
-    //     console.error("Error adding document: ", e);
-    //     alert("Error adding document: ", e);
-    //   }
+    try {
+          await updateDoc(doc(db, "families", 
+          FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
+            timestamp: new Date().toISOString(),
+            gameState: {
+              players: updatedPlayers,
+              selections: updatedSelections,
+              gameOver: (updatedSelections[0] && updatedSelections[1]),
+              winner: calculateWinner(updatedSelections),
+            },
+          });
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          alert("Error adding document: ", e);
+        }
+        
   };
 
   const calculateWinner = (selections) => {
@@ -150,25 +176,28 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
       selections[0] - selections[1] === 1 ||
       selections[0] - selections[1] === -2
     ) {
-      return "Player one wins";
+      return gameState.players[0];
     }
-    return "Player two wins";
+    return gameState.players[1];
   };
-  if (gameState?.gameOver) {
-    //key to translate seletions into the corresponding play word
-    const keys = ["rock", "paper", "scissors"];
-    return (
-      <Text>
-        {" "}
-        Game Over! {gameState.winner} {keys[gameState.selections[0] - 1]} vs{" "}
-        {keys[gameState.selections[1] - 1]}{" "}
-      </Text>
-    );
-  }
   return (
     <Box>
       <Text> Rock, Paper, Scissors {selected} </Text>
-
+      {gameState?.gameOver ? (
+          <Heading
+            mt="1/3"
+            borderWidth={3}
+            borderColor="primary.400"
+            textAlign
+            color="primary.400"
+            bg="black:alpha.50"
+            size="4xl"
+          >
+           {gameState.winner === auth.currentUser.uid ? "You win" : `${getNameFromUserId(gameState.winner)} wins`}
+          </Heading>
+      ) : (
+        <></>
+      )}
       <HStack alignItems="center">
         <IconButton
           key={1}
@@ -201,6 +230,16 @@ const RockPaperScissors = ({ gameState, chatId, messageId }) => {
       <Button onPress={sendMove} isDisabled={!selected}>
         Shoot
       </Button>
+      <HStack>
+        <VStack>
+            <Text> P1 </Text>
+            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[0]]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
+        </VStack>
+        <VStack>
+            <Text> P2 </Text>
+            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[1]]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
+        </VStack>
+      </HStack>
     </Box>
   );
 };

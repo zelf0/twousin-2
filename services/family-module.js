@@ -18,7 +18,9 @@ const usersTable = [];
 
 const populateTable = async () => {
     console.log("populating users table", familyId);
-    const querySnapshot = await getDocs(collection(db, "families", familyId, "users"));
+    //TODO: make this use the family users not the overall users
+    // const querySnapshot = await getDocs(collection(db, "families", familyId, "users"));
+    const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
