@@ -27,7 +27,7 @@ const Messages = memo(({chatId, onReply}) => {
           query(
             collection(db, "families", 
             FAMILY_TOKEN, "chats", chatId, "messages"),
-            orderBy("timestamp", "asc")
+            orderBy("timestamp", "desc")
           ),
           (snapshot) => {
             setMessages(
@@ -48,7 +48,7 @@ const Messages = memo(({chatId, onReply}) => {
 
   return (
     <FlatList
-    // initialNumToRender={10}
+    initialNumToRender={10}
     bg="darkBlue.800"
     data={messages}
     ref={flatListRef}
@@ -56,10 +56,10 @@ const Messages = memo(({chatId, onReply}) => {
     //   {length: 30, offset: 30 * index, index}
     // )}
     // initialScrollIndex = {messages.length - 1}
-    // inverted={1}
-    onContentSizeChange={() =>
-      flatListRef.current.scrollToEnd({ animated: true })
-    }
+    inverted={1}
+    // onContentSizeChange={() =>
+    //   flatListRef.current.scrollToEnd({ animated: true })
+    // }
     renderItem={({ item, index }) => (
       <Message
         highlighted={highlighted}

@@ -51,7 +51,6 @@ const Feed = ({ navigation }) => {
   // }, [])
 
   useEffect(() => {
-
     // familyId().then((famId) => {
     //   console.log("in feed", famId);
     //   if (!famId) {
@@ -59,7 +58,7 @@ const Feed = ({ navigation }) => {
     //     return;
     //   }
     //   const unsubscribe = onSnapshot(
-    //     query(collection(db, "families", 
+    //     query(collection(db, "families",
     //     famId, "posts"), orderBy("createdAt", "desc")),
     //     (snapshot) => {
     //       setPosts(
@@ -74,14 +73,15 @@ const Feed = ({ navigation }) => {
     //     }
     //   );
     //   return unsubscribe;
-      
+
     // })
     const unsubscribe = onSnapshot(
-      query(collection(db, "families", 
-      FAMILY_TOKEN, "posts"), orderBy("createdAt", "desc")),
+      query(
+        collection(db, "families", FAMILY_TOKEN, "posts"),
+        orderBy("createdAt", "desc")
+      ),
       (snapshot) => {
-        setPosts(
-          snapshot.docs.map((doc) => ({
+        setPosts(snapshot.docs.map((doc) => ({
             id: doc.id,
             data: doc.data(),
           }))

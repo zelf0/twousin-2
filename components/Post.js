@@ -37,7 +37,7 @@ const Post = ({ navigation, postData, id }) => {
     >
       <Box width="100%" maxW="500px" bg="light.50" m={1} >
         <Pressable onPress = {handlePress} p="5" bg = "green">
-          <InnerPost post={post}/>  
+          <InnerPost post={post} postId={id}/>  
         </Pressable>
         <VStack bg="#06024f" p="3">
           <ScrollView maxH={20}>

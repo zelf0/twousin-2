@@ -4,7 +4,7 @@ import LongPost from './LongPost';
 import Poll from './Poll';
 import ShortPost from './ShortPost';
 
-const InnerPost = ({post}) => {
+const InnerPost = ({post, postId}) => {
 
     switch(post.type) {
         case "long":
@@ -14,7 +14,7 @@ const InnerPost = ({post}) => {
             return <ImagePost post={post} />
           break;
         case "poll":
-            return <Poll post={post}/>
+            return <Poll post={post} postId={postId}/>
             break;
         case "short": 
             return <ShortPost post={post}/>

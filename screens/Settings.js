@@ -37,7 +37,7 @@ const Settings = ({navigation}) => {
   return (
     <Box> 
       <Text> Settings </Text> 
-      <Text> Version 3/13/23 4:00 PM </Text>
+      <Text> Version 3/15/23 11:53 PM </Text>
 
       {/* TODO: this should be its own componenet or service */}
       <Button onPress={logout}> Log Out </Button> 

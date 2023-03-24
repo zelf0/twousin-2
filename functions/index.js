@@ -48,6 +48,7 @@ exports.sendNotificationOnPostTest = functions.firestore
       });
     });
 
+
 // exports.sendNotificationOnNewGroupChat = functions.firestore
 //     .document("families/{familyId}/posts/postId}")
 //     .onCreate(async (snap, context) => {
@@ -64,7 +65,7 @@ exports.sendNotificationOnPostTest = functions.firestore
 
 exports.sendNotificationOnMessage = functions.firestore
     .document("families/{famId}/chats/{chatId}/messages/{messageId}")
-    .onCreate(async (snap, context) => {
+    .onWrite(async (change, context) => {
       functions.logger.info("Hello logs!");
       // eslint-disable-next-line max-len
       const chatRef = db.doc(`families/${context.params.famId}/chats/${context.params.chatId}`);
@@ -105,8 +106,9 @@ exports.sendNotificationOnMessage = functions.firestore
       const message = {
         to: [...userTokens],
         sound: "default",
-        title: `${snap.data().displayName} to ${chatSnap.data().chatName}`,
-        body: snap.data().message,
+        // eslint-disable-next-line max-len
+        title: `${change.after.data().displayName} to ${chatSnap.data().chatName}`,
+        body: change.after.data().message,
         data: {someData: "goes here"},
       };
       await fetch("https://exp.host/--/api/v2/push/send", {

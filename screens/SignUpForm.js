@@ -1,17 +1,32 @@
 
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import { Box, Button, Center, FormControl, Heading, HStack, Input, Link, Text, VStack } from 'native-base';
 import React, { useState } from 'react'
 
 const SignUpForm = ({navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const auth = getAuth();
+
 
   const createAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+
+        const user = userCredential.user;
+        updateProfile(auth.currentUser, {
+          displayName: username
+        }).then(() => {
+          // Profile updated!
+          // ...ß
+        }).catch((error) => {
+          alert(error);
+          // An error occurred
+          // ...
+        });
         // Signed in
+
         navigation.navigate('Home');
       })
       .catch((error) => {
@@ -28,7 +43,7 @@ const SignUpForm = ({navigation}) => {
           <Heading size="lg" color="coolGray.800" _dark={{
           color: "warmGray.50"
         }} fontWeight="semibold">
-            Welcome
+            Welcome to Twousin!
           </Heading>
           <Heading mt="1" color="coolGray.600" _dark={{
           color: "warmGray.200"
@@ -48,6 +63,10 @@ const SignUpForm = ({navigation}) => {
               {/* TODO: make passwords have to match */}
               <FormControl.Label>Confirm Password</FormControl.Label>
               <Input type="password" />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>Username</FormControl.Label>
+              <Input onChangeText={value => setUsername(value)} />
             </FormControl>
             <Button mt="2" colorScheme="indigo" onPress={createAccount}>
               Sign up

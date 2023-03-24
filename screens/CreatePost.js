@@ -7,12 +7,13 @@ import {
   Input,
   Text,
   TextArea,
-  Image
+  Image,
+  VStack,
 } from "native-base";
 import React from "react";
 import BottomNav from "../components/BottomNav";
 import { useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uuid from "uuid";
@@ -38,6 +39,7 @@ const CreatePost = ({ navigation }) => {
   const [flair, setFlair] = useState("");
   const [topics, setTopics] = useState([]);
   const [uri, setUri] = useState("");
+  const [pollOptions, setPollOptions] = useState(["Option 1", "Option 2"]);
   const handleChange = (e) => {
     switch (e.target.id) {
       case "body":
@@ -81,22 +83,27 @@ const CreatePost = ({ navigation }) => {
     // if (!input && !privateMessage) {
     //   return;
     // }
-    const uploadUrl = uri ? await uploadImage(uri) : "";
+    const uploadUrl = uri && selected == "image" ? await uploadImage(uri) : "";
     try {
       console.log("creating post", title);
-      const docRef = await addDoc(collection(db, "families", 
-      FAMILY_TOKEN, "posts"), {
-        userHandle: user ? user?.displayName : "no user",
-        // userHandle: "current user",
-        title: title,
-        body: body,
-        createdAt: new Date().toISOString(),
-        comments: [],
-        topics: topics,
-        flair: flair,
-        type: selected,
-        uri: uploadUrl,
-      });
+      const docRef = await addDoc(
+        collection(db, "families", FAMILY_TOKEN, "posts"),
+        {
+          userHandle: user ? user?.displayName : "no user",
+          userId: user ? user?.uid : null,
+          // userHandle: "current user",
+          title: title,
+          body: body,
+          createdAt: new Date().toISOString(),
+          comments: [],
+          topics: topics,
+          flair: flair,
+          type: selected,
+          uri: uploadUrl,
+          pollData: pollOptions.map((e) => {return {option: e, voteCount: 0};}),
+          votedIds: []
+        }
+      );
       // const docRef = await addDoc(collection(db, "chats"), {
       //   chatName: input,
       //   users: [auth.currentUser.uid, ...groupValue],
@@ -110,6 +117,12 @@ const CreatePost = ({ navigation }) => {
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+    setTitle("");
+    setSelected("short");
+    setBody("");
+    setFlair("");
+    setTopics([]);
+    setUri("");
   };
 
   // const onChooseImagePress = async () => {
@@ -196,10 +209,11 @@ const CreatePost = ({ navigation }) => {
 
   return (
     <Box alignItems="center">
-      <Box w="100%" maxWidth="300px" alignItems="center">
+      <Box w="100%" alignItems="center">
         <FormControl>
           <Stack m="4">
             <Input
+              value={title}
               placeholder="Type Something"
               onChangeText={(value) => setTitle(value)}
             />
@@ -259,6 +273,7 @@ const CreatePost = ({ navigation }) => {
         >
           <Stack mx="4">
             <TextArea
+              value={body}
               h={400}
               placeholder="Your Post Here"
               onChangeText={(value) => setBody(value)}
@@ -269,15 +284,30 @@ const CreatePost = ({ navigation }) => {
           <Button title="Choose Image..." onPress={onChooseImagePress}>
             Choose Image...
           </Button>
-          {uri ? <Image
-                      m="1"
-                      source={{ uri: uri }}
-                      alt="Image - No alt text"
-                      size="xl"
-                    /> : <></>}
+          {uri ? (
+            <Image
+              m="1"
+              source={{ uri: uri }}
+              alt="Image - No alt text"
+              size="xl"
+            />
+          ) : (
+            <></>
+          )}
         </Box>
-        <Box display={selected === "poll" ? "flex" : "none"}>
-          <Text> Todo </Text>
+        <Box w="50%"  display={selected === "poll" ? "flex" : "none"}>
+          <VStack>
+            {pollOptions.map((elem, idx) => (
+              <Box key={idx}>
+              <Text> Option {idx + 1} </Text>
+              <Input
+                value={elem}
+                key={idx}
+                onChangeText={(value) => setPollOptions(pollOptions.map((e, i) => (i == idx) ? value : e))}
+              />
+              </Box>
+            ))}
+          </VStack>
         </Box>
         {/* <Button title="Submit" onPress={handleSubmit(onSubmit)} /> */}
         <Button
