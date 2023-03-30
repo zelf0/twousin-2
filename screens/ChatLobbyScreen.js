@@ -100,7 +100,7 @@ const getNameFromUsers = (users) => {
       <ChatListItem 
         id={id}
         chatName={privateMessage ? getNameFromUsers(users) : chatName} 
-        messagesCount={messagesCount}
+        messagesCount={messagesCount ? messagesCount : 0}
         key={id}
         enterChat={enterChat}
         />)}
