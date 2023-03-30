@@ -9,7 +9,7 @@ import * as Clipboard from 'expo-clipboard';
 const auth = getAuth();
 const storage = getStorage();
 
-const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, highlight, highlighted}) => {
+const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, highlight, highlighted, messagesCount}) => {
 
   const [downloadedImages, setDownloadedImages] = useState([])
 
@@ -51,7 +51,11 @@ const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, hig
         return <Pressable accessibilityLabel="Message options" {...triggerProps} p={2} borderRadius={20} maxW="55%" minW="20%" bgColor={self ? "primary.500" : "white"} opacity={index === highlighted ? "50" : "100"}>
         {/* TODO: make displa name from uid instead iof hardcoded in caase someone changes their name- need to be using admin sdk
         <Text fontSize={10} color={self ? "white" : "primary.900"}> {auth.getUser(data.senderId).displayName} </Text> */}
-       {data.replyMessage ? <Button onPress={() => { highlight(data.replyIdx + 1); console.log(data.replyIdx); flatListRef.current.scrollToIndex({animated: true, index: data.replyIdx + 1});}} borderLeftWidth={3} p={0} h={30}> {data.replyMessage} </Button> : <></>}
+       {data.replyMessage ? <Button onPress={() => { 
+        highlight(messagesCount - data.replyIdx); 
+        console.log("count", messagesCount, "idx", data.replyIdx, "subtracted", messagesCount - data.replyIdx); 
+        flatListRef.current.scrollToIndex({animated: true, index: messagesCount - data.replyIdx});}} 
+        borderLeftWidth={3} p={0} h={30}> {data.replyMessage} </Button> : <></>}
         <HStack>
             <Text fontSize={10} color={self ? "white" : "primary.900"}> {data.displayName} </Text>
             <Text fontSize={8} color={self ? "white" : "primary.900"}> {convertDate(data.timestamp)} </Text>

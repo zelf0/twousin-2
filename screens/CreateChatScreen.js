@@ -42,7 +42,8 @@ const CreateChatScreen = ({ navigation }) => {
         createdBy: auth.currentUser.uid,
         createdAt:  new Date().toISOString(),
         latestTimestamp:  new Date().toISOString(),
-        privateMessage: privateMessage
+        privateMessage: privateMessage,
+        messagesCount: 0,
       });
       console.log("Document written with ID: ", docRef.id);
       navigation.navigate("Lobby");

@@ -19,7 +19,7 @@ import {
 import db from "../db";
 import { FAMILY_TOKEN } from "../services/family-module";
 
-const ChatListItem = ({ chatName, id, enterChat }) => {
+const ChatListItem = ({ chatName, id, enterChat, messagesCount }) => {
   const [lastMessage, setLastMessage] = useState({
     message: "...",
     timestamp: null,
@@ -32,6 +32,7 @@ const ChatListItem = ({ chatName, id, enterChat }) => {
 
   //   return unsubscribe;
   // }, [])
+  console.log("num messages", messagesCount);
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
@@ -54,7 +55,7 @@ const ChatListItem = ({ chatName, id, enterChat }) => {
   }, []);
 
   const navigateToChat = () => {
-    enterChat(id, chatName);
+    enterChat(id, chatName, messagesCount);
   };
 
   const convertDate = (isoString) => {

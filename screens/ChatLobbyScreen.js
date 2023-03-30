@@ -73,10 +73,11 @@ useEffect(() => {
   return unsubscribe;
 }, [])
 
-const enterChat  = (id, chatName) => {
+const enterChat  = (id, chatName, messagesCount) => {
   stackNavigation.navigate("Chat", {
     id: id,
     chatName: chatName,
+    messagesCount: messagesCount,
   });
 }
 
@@ -95,10 +96,11 @@ const getNameFromUsers = (users) => {
 
       <ScrollView m="0" width="100%" showsVerticalScrollIndicator={true}> 
        
-      {chats.map(({id, data : { chatName, privateMessage, users }}) => 
+      {chats.map(({id, data : { chatName, privateMessage, users, messagesCount }}) => 
       <ChatListItem 
         id={id}
         chatName={privateMessage ? getNameFromUsers(users) : chatName} 
+        messagesCount={messagesCount}
         key={id}
         enterChat={enterChat}
         />)}

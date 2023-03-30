@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { FAMILY_TOKEN } from '../services/family-module';
 
-const Messages = memo(({chatId, onReply}) => {
+const Messages = memo(({chatId, onReply, messagesCount}) => {
 
     const [messages, setMessages] = useState([]);
     const [highlighted, setHighlighted] = useState(null);
@@ -69,6 +69,7 @@ const Messages = memo(({chatId, onReply}) => {
         index={index}
         chatId={chatId}
         data={item?.data}
+        messagesCount={messagesCount}
         flatListRef={flatListRef}
       />
     )}

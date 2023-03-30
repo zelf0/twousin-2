@@ -40,7 +40,7 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import GameLobby from "../components/GameLobby";
 import ChatInput from "../components/ChatInput";
 import Messages from "../components/Messages";
@@ -70,7 +70,21 @@ const ChatScreen = ({ navigation, route }) => {
   const [gameState, setGameState] = useState(null);
   const [replyIdx, setReplyIdx] = useState(null);
   const [replyMessage, setReplyMessage] = useState(null);
+  const [messagesCount, setMessagesCount] = useState(route.params.messagesCount);
 
+  // useEffect(() => {
+    //i was thinking of making a useeffect for messages count but actually i think that's too many read writes because i would have to make a wholle snapshot for the messages and count them i should probably just change the mssages count
+  //   db, "families", FAMILY_TOKEN, "chats", route.params.id, "messages";
+  //   const chatRef = db.collection(db, "families", FAMILY_TOKEN, "chats").doc(route.params.id);
+  //   const messagesRef = chatRef.collection("favorites");
+
+  //   route.params.id;
+  //   setMessagesCount(count);
+
+  //   // return () => {
+  //   //   second
+  //   // }
+  // }, []);
 
   const removePhoto = (imageToRemove) => {
     setImages(images.filter((img) => img != imageToRemove));
@@ -78,7 +92,7 @@ const ChatScreen = ({ navigation, route }) => {
 
   const reply = (idx, message) => {
     console.log(idx);
-    setReplyIdx(idx);
+    setReplyIdx(messagesCount - idx);
     setReplyMessage(message);
   };
 
@@ -110,7 +124,6 @@ const ChatScreen = ({ navigation, route }) => {
   const uploadImages = async () => {
     const imageRefs = [];
     for (let i = 0; i < images?.length; i++) {
-
       console.log("uploading..", images[i]);
       // const compressedImageData = (await manipulateAsync(images[i], { resize: { width: 250 } }));
       // const uploadUrl = await uploadImage(compressedImageData);
@@ -121,7 +134,7 @@ const ChatScreen = ({ navigation, route }) => {
       // console.log("images", uploadedImages[i]);
     }
     return imageRefs;
-  }
+  };
 
   const sendMessage = async (input) => {
     if (!input && images.length == 0 && !gameType) {
@@ -142,15 +155,20 @@ const ChatScreen = ({ navigation, route }) => {
       // console.log("images", uploadedImages[i]);
       imageRefs.push(uploadUrl);
     }
-  
 
     console.log("reset state");
     //  console.log("IMAGE.  ", uploadedImages[0]);
     try {
       console.log("in try statement");
       const docRef = await addDoc(
-        collection(db, "families", 
-        FAMILY_TOKEN,"chats", route.params.id, "messages"),
+        collection(
+          db,
+          "families",
+          FAMILY_TOKEN,
+          "chats",
+          route.params.id,
+          "messages"
+        ),
         {
           timestamp: new Date().toISOString(),
           message: input,
@@ -169,10 +187,13 @@ const ChatScreen = ({ navigation, route }) => {
       alert("Error adding document: ", e);
     }
     try {
-      await updateDoc(doc(db, "families", 
-      FAMILY_TOKEN, "chats", route.params.id), {
-        latestTimestamp: new Date().toISOString(),
-      });
+      await updateDoc(
+        doc(db, "families", FAMILY_TOKEN, "chats", route.params.id),
+        {
+          latestTimestamp: new Date().toISOString(),
+          messagesCount: messagesCount + 1,
+        }
+      );
     } catch (e) {
       console.error("Error adding document: ", e);
       alert("Error adding document: ", e);
@@ -183,6 +204,7 @@ const ChatScreen = ({ navigation, route }) => {
     setGameState(null);
     setReplyIdx(null);
     setReplyMessage(null);
+    setMessagesCount(messagesCount + 1);
   };
 
   const uploadImage = async (uri) => {
@@ -216,7 +238,6 @@ const ChatScreen = ({ navigation, route }) => {
     return storageRef.toString();
   };
 
-
   // useEffect(() => {
   //   let i = 0;
   //   const intervalToken = setInterval(() => {
@@ -246,8 +267,7 @@ const ChatScreen = ({ navigation, route }) => {
       >
         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
 
-        <Messages chatId={route.params.id}
-        onReply={reply} /> 
+        <Messages chatId={route.params.id} onReply={reply} messagesCount={messagesCount}/>
         <Center bottom={0} style={styles.footer}>
           {/* <ScrollView maxH={200}> */}
           {/* {images.map((image, idx) => 
@@ -317,7 +337,7 @@ const ChatScreen = ({ navigation, route }) => {
               <IconButton
                 icon={<Icon size={7} as={Ionicons} name="close" />}
                 onPress={() => {
-                  console.log("close repl")
+                  console.log("close repl");
                   setReplyIdx(null);
                   setReplyMessage(null);
                 }}
