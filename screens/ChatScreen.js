@@ -256,7 +256,7 @@ const ChatScreen = ({ navigation, route }) => {
       <KeyboardAvoidingView
         h={
           gameLobbyOpen
-            ? { base: "85%", lg: "auto" }
+            ? { base: "70%", lg: "auto" }
             : {
                 base: "95%",
                 lg: "auto",

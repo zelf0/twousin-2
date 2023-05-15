@@ -151,6 +151,8 @@ const RockPaperScissors = ({ chatId, messageId }) => {
     try {
           await updateDoc(doc(db, "families", 
           FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
+            senderId: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
             timestamp: new Date().toISOString(),
             gameState: {
               players: updatedPlayers,
@@ -233,11 +235,11 @@ const RockPaperScissors = ({ chatId, messageId }) => {
       <HStack>
         <VStack>
             <Text> P1 </Text>
-            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[0]]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
+            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[0] - 1]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
         </VStack>
         <VStack>
             <Text> P2 </Text>
-            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[1]]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
+            {gameState?.gameOver ? <Icon size="4xl" as={FontAwesome5} name={["hand-rock", "hand-paper", "hand-scissors"][gameState.selections[1] - 1]}/> : <Icon size="4xl" as={FontAwesome5} name="question" />}
         </VStack>
       </HStack>
     </Box>

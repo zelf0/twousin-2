@@ -59,7 +59,6 @@ const Message = memo(({data, chatId, messageId, onReply, flatListRef, index, hig
         <HStack>
             <Text fontSize={10} color={self ? "white" : "primary.900"}> {data.displayName} </Text>
             <Text fontSize={8} color={self ? "white" : "primary.900"}> {convertDate(data.timestamp)} </Text>
-            <Text> {index} </Text>
           </HStack>
 
           {data.gameType ? <GameMessage chatId={chatId} messageId={messageId} gameState={data.gameState} gameType={data.gameType} self={self} /> : <></>}

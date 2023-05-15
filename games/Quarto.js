@@ -198,6 +198,9 @@ const Quarto = ({ chatId, messageId }) => {
     try {
       await updateDoc(doc(db, "families", 
       FAMILY_TOKEN, "chats", chatId, "messages", messageId), {
+        //TODO: deprecate display name
+        senderId: auth.currentUser.uid,
+        displayName: auth.currentUser.displayName,
         timestamp: new Date().toISOString(),
         gameState: {
           players: gameState.players,

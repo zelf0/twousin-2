@@ -31,6 +31,26 @@ const GameLobby = ({createNewGame}) => {
                     winner: ""
                 });
               break;
+              case "tic-tac-toe":
+                createNewGame(gameType, {
+                    players: [auth?.currentUser.uid, null],
+                    board: ["", "", "", "", "", "", "", "", ""],
+                    currTurn: 0,
+                    gameOver: false,
+                    winner: ""
+                });
+              break;
+              case "quoridor":
+                createNewGame(gameType, {
+                    players: [auth?.currentUser.uid, null],
+                    pawns: [[0, 4],[9, 4]],
+                    board: Array(81).fill({right: false, left: false, top: false, bottom: false}),
+                    pieceLocations: [],
+                    currTurn: 0,
+                    gameOver: false,
+                    winner: ""
+                });
+              break;
             default:
               // code block
               break;
@@ -41,11 +61,13 @@ const GameLobby = ({createNewGame}) => {
 
   return (
     <SafeAreaView>
-        <Center h={10}>
+        <Center>
         <Text> Game Lobby </Text>
         {/* TODO: change to list */}
         <Button onPress={() => {newGame("rock-paper-scissors")}}> Play rock paper scissors </Button>
         <Button onPress={() => {newGame("quarto")}}> Play Quarto </Button>
+        <Button onPress={() => {newGame("tic-tac-toe")}}> Play Tic Tac Toe </Button>
+        <Button onPress={() => {newGame("quoridor")}}> Play Quoridor </Button>
         </Center>
     </SafeAreaView>
   )
