@@ -67,7 +67,7 @@ const Quoridor = ({ chatId, messageId }) => {
         )
       );
     }
-    console.log("board", board);
+    // console.log("board", board);
   };
 
   const toggleRotation = () => {
@@ -76,8 +76,7 @@ const Quoridor = ({ chatId, messageId }) => {
   };
 
   return (
-    <Center>
-      <Text> Hey </Text>
+    <Center p={5}>
       {/* board if we use a 2d array */}
       {/* {board.map((row, rowIdx) => (
         <HStack key={rowIdx}>
@@ -128,7 +127,7 @@ const Quoridor = ({ chatId, messageId }) => {
         numColumns={9}
         data={board}
         renderItem={({ item, index }) => (
-          <Square position="relative">
+          // <Square position="relative">
             <Square
               position="relative"
               size={8}
@@ -142,35 +141,41 @@ const Quoridor = ({ chatId, messageId }) => {
               borderRightColor={item.right ? "amber.500" : "dark.500"}
               // borderTopColor={item.top ? "amber.500" : "dark.500"}
               borderBottomColor={item.bottom ? "amber.500" : "dark.500"}
+              bgColor={pawns ? pawns.includes(index) ? "primary.500" : "white" : "white"}
             >
               {/* <Pressable onPress={() => {selectWall(index, "bottom")}} w={8} h={4} bgColor="red.500"></Pressable> */}
-            </Square>
+            {/* </Square> */}
             {wallHorizontal ? (
-              <Pressable
-                position="absolute"
-                top={4}
-                zIndex={2}
-                onPress={() => {
+              <VStack> 
+                <Pressable w={8} h={4} onPress={() => {
+                  selectWall(index - 9);
+                }}></Pressable>
+                <Pressable w={8} h={4} onPress={() => {
                   selectWall(index);
-                }}
-                w={8}
-                h={8}
-                opacity={item.bottom ? 40 : 80}
-                borderWidth={0}
-              ></Pressable>
+                }}></Pressable>
+              </VStack>
+              // <Pressable
+              //   position="absolute"
+              //   top={4}
+              //   zIndex={2}
+              //   onPress={() => {
+              //     selectWall(index);
+              //   }}
+              //   w={8}
+              //   h={8}
+              //   opacity={item.bottom ? 40 : 80}
+              //   borderWidth={0}
+              //   bgColor="red.500"
+              // ></Pressable>
             ) : (
-              <Pressable
-                position="absolute"
-                left={4}
-                zIndex={2}
-                onPress={() => {
-                  selectWall(index);
-                }}
-                w={8}
-                h={8}
-                opacity={item.right ? 40 : 80}
-                borderWidth={0}
-              ></Pressable>
+              <HStack> 
+              <Pressable opacity={50} w={4} h={8} onPress={() => {
+                selectWall(index - 1);
+              }}></Pressable>
+              <Pressable opacity={50} w={4} h={8} onPress={() => {
+                selectWall(index);
+              }}></Pressable>
+            </HStack>
             )}
           </Square>
         )}

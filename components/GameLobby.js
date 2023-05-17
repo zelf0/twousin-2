@@ -43,7 +43,7 @@ const GameLobby = ({createNewGame}) => {
               case "quoridor":
                 createNewGame(gameType, {
                     players: [auth?.currentUser.uid, null],
-                    pawns: [[0, 4],[9, 4]],
+                    pawns: [4,76],
                     board: Array(81).fill({right: false, left: false, top: false, bottom: false}),
                     pieceLocations: [],
                     currTurn: 0,

@@ -18,7 +18,7 @@ const GameMessage = ({self, gameState, gameType, chatId, messageId}) => {
     {/* <Box m={2} alignItems = {self ? "flex-end" : "flex-start"}>
     <Center p={3} borderRadius={20} maxW="55%" minW="20%" bgColor={self ? "primary.500" : "white"}> */}
     <Pressable onPress = {() => setGameStageOpen(true)} m={2} alignItems = {self ? "flex-end" : "flex-start"}>
-        <Text borderWidth={1} > Play {gameType}</Text>
+        <Text borderRadius={5} borderWidth={1} p={5} > Play {gameType}</Text>
     </Pressable>
     {/* </Center>
     </Box> */}
