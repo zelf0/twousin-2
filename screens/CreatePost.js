@@ -14,7 +14,7 @@ import React from "react";
 import BottomNav from "../components/BottomNav";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { getApps, initializeApp } from "firebase/app";
+// import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import uuid from "uuid";
 import firebaseApp from "../firebaseApp";

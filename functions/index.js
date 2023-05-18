@@ -7,18 +7,6 @@ admin.initializeApp();
 const db = admin.firestore();
 const fetch = require("node-fetch");
 
-const MYTOKEN = "ExponentPushToken[aX6vTYMPZCO_VaoKz-iBrD]";
-// eslint-disable-next-line max-len
-// const MYTOKEN = "fpILwniiIUspk-Yy5yUnkJ:APA91bEoOb_T_FwG6RDPUAe1kRPdAk052RP4350kRm25s9Y_ENCVSAJ7VLPbBmgaYdErtd-o36uN62mKMdviE2yhHYzIPi3PuJ9UfTVwQu3bLHCf98u6TbPW_NPLF4OEQh2siYAT3XXp";
-
-// // // Create and Deploy Your First Cloud Functions
-// // // https://firebase.google.com/docs/functions/write-firebase-functions
-// //
-// exports.sendNotification = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 // exports.testFunc = functions.firestore
 //     .document("chats")
 //     .onCreate((snapshot) => {
@@ -26,27 +14,27 @@ const MYTOKEN = "ExponentPushToken[aX6vTYMPZCO_VaoKz-iBrD]";
 //     //   response.send("Hello from Firebase!");
 //   });
 
-exports.sendNotificationOnPostTest = functions.firestore
-    .document("families/{familyId}/posts/{postId}")
-    .onCreate(async (snap, context) => {
-      functions.logger.info("Hello logs!", MYTOKEN);
-      const message = {
-        to: MYTOKEN,
-        sound: "default",
-        title: "Original Title",
-        body: "And here is the body!",
-        data: {someData: "goes here"},
-      };
-      await fetch("https://exp.host/--/api/v2/push/send", {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
-    });
+// exports.sendNotificationOnPostTest = functions.firestore
+//     .document("families/{familyId}/posts/{postId}")
+//     .onCreate(async (snap, context) => {
+//       functions.logger.info("Hello logs!", MYTOKEN);
+//       const message = {
+//         to: MYTOKEN,
+//         sound: "default",
+//         title: "Original Title",
+//         body: "And here is the body!",
+//         data: {someData: "goes here"},
+//       };
+//       await fetch("https://exp.host/--/api/v2/push/send", {
+//         method: "POST",
+//         headers: {
+//           "Accept": "application/json",
+//           "Accept-encoding": "gzip, deflate",
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(message),
+//       });
+//     });
 
 
 // exports.sendNotificationOnNewGroupChat = functions.firestore
@@ -134,5 +122,3 @@ exports.sendNotificationOnMessage = functions.firestore
 //   });
 
 
-// eslint-disable-next-line max-len
-// token: fpILwniiIUspk-Yy5yUnkJ:APA91bEoOb_T_FwG6RDPUAe1kRPdAk052RP4350kRm25s9Y_ENCVSAJ7VLPbBmgaYdErtd-o36uN62mKMdviE2yhHYzIPi3PuJ9UfTVwQu3bLHCf98u6TbPW_NPLF4OEQh2siYAT3XXp
